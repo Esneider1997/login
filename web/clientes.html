@@ -23,13 +23,12 @@
                     <input type="text" name="correo" id="correo" class="form-control">
                     <input type="hidden" name="id" id="id" class="form-control">
                     <br>
-                    <button type='button' onclick="guardar()" class="btn btn-primary" id="btn-guardar"
-                        rol="jss">Guardar</button>
+                    <button type='button' onclick="guardar()" class="btn btn-primary" id="btn-guardar" rol="jss">Guardar</button>
                 </form>
             </div>
         </div>
 
-        <h2 class="my-3">Listado de personas</h2>
+        <h2 class="my-3">Lista de Clientes</h2>
 
         <div class="row">
             <div class="col-12">
@@ -55,37 +54,37 @@
     
     <script src="../js/jquery.js"></script>
     <script src="js/clientes/clientes.js"></script>
-    <script src="../socket.io/socket.io.min.js">//libreria util para la ejecucion del realtime</script>
+    <script src="../socket.io/socket.io.min.js"></script> <!-- libreria util para la ejecucion del realtime -->
 
     <script>
         //variable siempre en escucha de socket.oi
-        var socket = io('http://localhost:80/', { transport: ['websocket', 'polling', 'flashsocket'] });
-
+        var socket = io('http://localhost:3000/', { transport: ['websocket', 'polling', 'flashsocket'] });
+        
         //funcion creada para para mostrar en pantala la interaccion del usuario con la tabla de datos 1. crear 2. editar 3.eliminar
-
-        socket.on('socket update', function(data){
-            if(data.act == 1){
-                $("tbody").prepend(`<tr id="tr_${data.id}"
+        socket.on('socket update', function (data) {
+            if (data.act == 1) {
+                $("#tbody").prepend(`<tr id="tr_${data.id}">
                     <td>${data.nombre}</td>
                     <td>${data.apellido}</td>
                     <td>${data.telefono}</td>
                     <td>${data.correo}</td>
-                    <td><button class="btn btn-info btn-sm" onclick="pasarparametros('${data.nombre}', '${data.apellido}', '${data.telefono}', '${data.correo}')">Editar</button></td>
-                    <td><button class="btn btn-warning btn-sm" onclick="eliminar(${data.id})">Eliminar</button></td>
+                    <td><button class="btn btn-info btn-sm"  onclick="pasarparametros('${data.nombre}','${data.apellido}','${data.correo}','${data.telefono}',${data.id})">Editar</button></td>
+                    <td><button class="btn btn-warning btn-sm"  onclick="eliminar(${data.id})">Eliminar</button></td>
                 </tr>`);
-            }else if (data.act == 2) {
+            } else if (data.act == 2) {
                 $("#tr_" + data.id).replaceWith(
                     `<tr id="tr_${data.id}">
                     <td>${data.nombre}</td>
                     <td>${data.apellido}</td>
                     <td>${data.telefono}</td>
                     <td>${data.correo}</td>
-                    <td><button class="btn btn-warning btn-sm"  onclick="pasarparametros('${data.nombre}','${data.apellido}','${data.correo}','${data.telefono}',${data.id})">Editar</button></td>
+                    <td><button class="btn btn-warning btn-sm"  onclick="pasarparametros('${data.nombre}','${data.apellido}','${data.telefono}','${data.correo}',${data.id})">Editar</button></td>
                     <td><button class="btn btn-warning btn-sm"  onclick="eliminar(${data.id})">Eliminar</button></td></tr>`);
             } else if (data.act == 3) {
                 $("#tr_" + data.id).remove();
             }
         });
+        
     </script>
 </body>
 </html>
