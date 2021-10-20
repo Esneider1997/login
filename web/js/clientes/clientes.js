@@ -1,8 +1,8 @@
 //main execute
 $(document).ready(function(){
-    //alert('cualquier cosa');
     listar();
 });
+
 
 //funcion listar datos de la tabla el orden lo decide el controlador 
 function listar(){
@@ -64,6 +64,7 @@ function guardar(){
         success: function(respuesta) {
            console.log(respuesta)
            socket.emit('socket update', respuesta);
+           alertify.alert('Registro guardado', 'Su registro fue guardado con éxito!', function(){ alertify.success('registro guardado'); });
         },
         error: function() {
             console.log("No se ha podido obtener la información");
@@ -73,8 +74,6 @@ function guardar(){
         }
     });
 }
-
-
 
 function pasarparametros(nombre,apellido,telefono,correo, id){
     $('#nombre').val(nombre);
@@ -86,18 +85,28 @@ function pasarparametros(nombre,apellido,telefono,correo, id){
 }
 
 function eliminar(id){
-    console.log(id);
-     $.ajax({
-        url: 'http://localhost/App/api/Clientes/delete/'+id,
-        type:'get',
-        success: function(respuesta) {
-           console.log(respuesta)
-           socket.emit('socket update', respuesta);
-        },
-        error: function() {
-            console.log("No se pudo eliminar registro");
-        }
-    });
+    alertify.confirm(
+        'Confirm Message', 
+        function(){
+
+            alertify.success('Ok');
+            console.log(id);
+            $.ajax({
+                url: 'http://localhost/App/api/Clientes/delete/'+id,
+                type:'get',
+                success: function(respuesta) {
+                    console.log(respuesta)
+                    socket.emit('socket update', respuesta);
+                },
+                error: function() {
+                    console.log("No se pudo eliminar registro");
+                }
+             });
+        }, 
+        function(){ 
+            alertify.error
+        ('Cancel')}
+    );
 }
 
 //funcion que edita un registro de la tabla 
@@ -125,16 +134,14 @@ function editar(){
         type:'post',
         data:data,
         success: function(respuesta) {
-          
            socket.emit('socket update', respuesta);
          },
         error: function() {
             console.log("No se ha podido obtener la información");
         },complete:function(){
             $("#btn-guardar").attr('onclick','guardar()');
-            var formulario =document.getElementById("f1");
+            var formulario = document.getElementById("f1");
             formulario.reset();
-            
         }
     });
 }
@@ -174,5 +181,4 @@ function actualizar() {
             alert("No se ha podido obtener la información");
         }
 	});
-
 }
